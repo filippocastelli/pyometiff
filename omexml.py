@@ -5,6 +5,10 @@
 # Copyright (c) 2009-2014 Broad Institute
 # All rights reserved.
 
+# This file is based on CellProfiler/python-bioformats
+# https://github.com/CellProfiler/python-bioformats/blob/master/bioformats/omexml.py
+# commit 802eb4b
+
 """omexml.py read and write OME xml
 
 """
@@ -914,6 +918,10 @@ class OMEXML(object):
         @property
         def Objective(self):
             return OMEXML.Objective(self.node.find(qn(self.ns['ome'], "Objective")))
+        
+        @property
+        def Microscope(self):
+            return OMEXML.Microscope(self.node.find(qn(self.ns['ome'], "Microscope")))
 
 
     def instrument(self, index=0):
@@ -979,7 +987,43 @@ class OMEXML(object):
         def set_Type(self, value):
             self.node.set("Type", str(value))
         Type = property(get_Type, set_Type)
-
+        
+        
+    class Microscope(object):
+        
+        def __init__(self, node):
+            self.node = node
+            self.ns = get_namespaces(self.node)
+            
+        def get_Type(self):
+            return self.node.get("Type")
+        def set_Type(self, value):
+            self.node.set("Type", str(value))
+        Type = property(get_Type, set_Type)
+        
+        def get_Manufacturer(self):
+            return self.node.get("Manufacturer")
+        def set_Manufacturer(self, value):
+            self.node.set("Manufacturer", str(value))
+        Manufacturer = property(get_Manufacturer, set_Manufacturer)
+        
+        def get_Model(self):
+            return self.node.get("Model")
+        def set_Model(self, value):
+            self.node.set("Model", str(value))
+        Model = property(get_Model, set_Model)
+        
+        def get_SerialNumber(self):
+            return self.node.get("SerialNumber")
+        def set_SerialNumber(self, value):
+            self.node.set("SerialNumber", str(value))
+        SerialNumber = property(get_SerialNumber, set_SerialNumber)
+        
+        def get_LotNumber(self):
+            return self.node.get("LotNumber")
+        def set_LotNumber(self, value):
+            self.node.set("LotNumber", str(value))
+        LotNumber = property(get_LotNumber, set_LotNumber)
 
 
     class StructuredAnnotations(dict):
