@@ -33,9 +33,12 @@ logger = logging.getLogger(__file__)
 import re
 import uuid
 
+import numpy as np
+
 def xsd_now():
     '''Return the current time in xsd:dateTime format'''
     return datetime.datetime.now().isoformat()
+
 
 DEFAULT_NOW = xsd_now()
 #
@@ -89,6 +92,26 @@ PT_BIT = "bit"
 PT_DOUBLE = "double"
 PT_COMPLEX = "complex"
 PT_DOUBLECOMPLEX = "double-complex"
+
+ometypedict = {
+    np.dtype(np.int8): PT_INT8,
+    np.dtype(np.int16): PT_INT16,
+    np.dtype(np.int32): PT_INT32,
+    np.dtype(np.uint8): PT_UINT8,
+    np.dtype(np.uint16): PT_UINT16,
+    np.dtype(np.uint32): PT_UINT32,
+    np.dtype(np.float32): PT_FLOAT,
+    np.dtype(np.float64): PT_DOUBLE,
+    np.dtype(np.complex64): PT_COMPLEX,
+    np.dtype(np.complex128): PT_DOUBLECOMPLEX
+}
+
+def get_pixel_type(npdtype):
+    ptype = ometypedict.get(npdtype)
+    if ptype is None:
+        raise ValueError('OMEXML get_pixel_type unknown type: ' + npdtype.name)
+    return ptype
+
 #
 # The allowed dimension types
 #
@@ -335,7 +358,14 @@ class OMEXML(object):
         self.ns = get_namespaces(self.dom.getroot())
         if self.ns['ome'] is None:
             raise Exception("Error: String not in OME-XML format")
-
+        
+        
+        # # adapted from AICSIMAGEIO
+        # omeElem = self.dom
+        # if not omeElem.get("UUID"):
+        #     omeElem.set('UUID', 'urn:uuid:'+str(uuid.uuid4()))
+        # self.uuidStr = omeElem.get('UUID')
+        
     def __str__(self):
         #
         # need to register the ome namespace because BioFormats expects
@@ -509,7 +539,6 @@ class OMEXML(object):
 
         def get_SamplesPerPixel(self):
             return get_int_attr(self.node, "SamplesPerPixel")
-
         def set_SamplesPerPixel(self, value):
             self.node.set("SamplesPerPixel", str(value))
         SamplesPerPixel = property(get_SamplesPerPixel, set_SamplesPerPixel)
@@ -565,14 +594,14 @@ class OMEXML(object):
 
         IFD = property(get_IFD, set_IFD)
 
-        def get_plane_count(self):
+        def get_PlaneCount(self):
             '''How many planes in this TiffData. Should always be 1'''
             return get_int_attr(self.node, "PlaneCount")
 
-        def set_plane_count(self, value):
+        def set_PlaneCount(self, value):
             self.node.set("PlaneCount", str(value))
 
-        plane_count = property(get_plane_count, set_plane_count)
+        PlaneCount = property(get_PlaneCount, set_PlaneCount)
 
     class Plane(object):
         '''The OME/Image/Pixels/Plane element
@@ -808,6 +837,16 @@ class OMEXML(object):
         def set_SizeC(self, value):
             self.node.set("SizeC", str(value))
         SizeC = property(get_SizeC, set_SizeC)
+        
+        
+        def get_prova(self):
+            '''The dimensions of the image in the C direction in pixels'''
+            print("entered getter")
+            return self.node.get("prova")
+        def set_prova(self, value):
+            print("entered setter")
+            self.node.set("prova", str(value))
+        prova = property(get_prova, set_prova)
 
         def get_channel_count(self):
             '''The number of channels in the image
@@ -820,7 +859,7 @@ class OMEXML(object):
             ...
             '''
             return len(self.node.findall(qn(self.ns['ome'], "Channel")))
-
+        
         def set_channel_count(self, value):
             assert value > 0
             channel_count = self.channel_count
@@ -837,12 +876,16 @@ class OMEXML(object):
                     new_channel.SamplesPerPixel = 1
 
         channel_count = property(get_channel_count, set_channel_count)
-
+        
         def Channel(self, index=0):
             '''Get the indexed channel from the Pixels element'''
             channel = self.node.findall(qn(self.ns['ome'], "Channel"))[index]
             return OMEXML.Channel(channel)
         channel = Channel
+        
+        # integrated from AICSIMAGEIO
+        def get_channel_names(self):
+            return [self.Channel(i).Name for i in range(self.get_channel_count())]
         
         def get_plane_count(self):
             '''The number of planes in the image
@@ -892,11 +935,53 @@ class OMEXML(object):
                     ElementTree.SubElement(self.node, qn(self.ns['ome'], "TiffData")))
 
         tiffdata_count = property(get_tiffdata_count, set_tiffdata_count)
-
-        def tiffdata(self, index=0):
-            data = self.node.findall(qn(self.ns['ome'], "TiffData"))[index]
-            return OMEXML.TiffData(data)
-
+            
+        # changed from tiffdata to Tiffdata
+        def Tiffdata(self, index=0):
+            tiffData = self.node.findall(qn(self.ns['ome'], "TiffData"))[index]
+            return OMEXML.TiffData(tiffData)
+        
+        # adaoted from AICSIMAGEIO
+        def populate_TiffData(self):
+            assert self.SizeC is not None
+            assert self.SizeZ is not None
+            assert self.SizeT is not None
+            # total = self.SizeC * self.SizeT * self.SizeZ
+            
+            # bye bye tiffdatas
+            tiffdatas = self.node.findall(qn(self.ns['ome'], "TiffData"))
+            for td in tiffdatas:
+                self.node.remove(td)
+            
+            sizes = {
+                "Z" : self.SizeZ,
+                "C" : self.SizeC,
+                "T" : self.SizeT}
+            
+            setters = {
+                "Z": OMEXML.TiffData.set_FirstZ,
+                "C": OMEXML.TiffData.set_FirstC,
+                "T": OMEXML.TiffData.set_FirstT,
+            }
+            dims = self.DimensionOrder[-3:]
+            ifd = 0
+            for i in range(sizes[dims[2]]):
+                for j in range(sizes[dims[1]]):
+                    for k in range(sizes[dims[0]]):
+                        new_tiffdata = OMEXML.TiffData(
+                            ElementTree.SubElement(self.node, qn(self.ns['ome'], "TiffData")))
+                        setters[dims[2]](new_tiffdata, i)
+                        setters[dims[1]](new_tiffdata, j)
+                        setters[dims[0]](new_tiffdata, k)
+                        new_tiffdata.set_IFD(ifd)
+                        new_tiffdata.set_PlaneCount(1)
+                        # child element <UUID FileName=""></UUID> is omitted here for single file ome tiffs
+                        # UUID has an optional FileName attribute for image data that
+                        # are split among several files but we do not currently support it.
+                        # uuidelem = ElementTree.SubElement(new_tiffdata.node, qn(self.ns['ome'], "UUID"))
+                        # uuidelem.text = self.ome_uuid
+                        ifd = ifd + 1
+                
     class Instrument(object):
         '''Representation of the OME/Instrument element'''
         def __init__(self, node):
