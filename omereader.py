@@ -1,12 +1,13 @@
 from pathlib import Path
 from lxml import etree as ET
+# from functools import wraps
 
 from omexml import OMEXML
 
 import tifffile
 import numpy as np
 
-
+#TODO: Implement INSTRUMENT
 #%%
 class OMETIFFReader:
     
@@ -21,7 +22,6 @@ class OMETIFFReader:
         self.array, self.omexml_string = self._open_tiff(self.fpath)
         self.metadata = self.parse_metadata(self.omexml_string)
         return self.array, self.metadata, self.omexml_string
-    
     
     def write_xml(self):
         if not hasattr(self, "omexml_string"):
@@ -47,6 +47,17 @@ class OMETIFFReader:
         metadata["SizeC"] = self.ox.image(self.imageseries).Pixels.SizeC
         metadata["SizeX"] = self.ox.image(self.imageseries).Pixels.SizeX
         metadata["SizeY"] = self.ox.image(self.imageseries).Pixels.SizeY
+        
+        
+        # physical size
+        metadata["PhysicalSizeX"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeX
+        metadata["PhysicalSizeY"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeY
+        metadata["PhysicalSizeZ"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeZ
+        
+        # physical size unit
+        metadata["PhysicalSizeXUnit"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeXUnit
+        metadata["PhysicalSizeYUnit"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeYUnit
+        metadata["PhysicalSizeZUnit"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeZUnit
         
         # number of image series
         metadata["TotalSeries"] = self.ox.get_image_count()
@@ -75,19 +86,10 @@ class OMETIFFReader:
         # DimOrder custom field 
         metadata["DimOrder"] = metadata["DimOrder BF Array"]
     
-        # get the scaling
-        metadata['XScale'] = self.ox.image(self.imageseries).Pixels.PhysicalSizeX
-        metadata['XScale'] = np.round(metadata['XScale'], 3)
-        
-        metadata['YScale'] = self.ox.image(self.imageseries).Pixels.PhysicalSizeY
-        metadata['YScale'] = np.round(metadata['YScale'], 3)
-        
-        metadata['ZScale'] = self.ox.image(self.imageseries).Pixels.PhysicalSizeZ
-        metadata['ZScale'] = np.round(metadata['ZScale'], 3)
-    
         # get all image IDs
         for i in range(self.ox.get_image_count()):
             metadata['ImageIDs'].append(i)
+            
         # get information about the instrument and objective
         try:
             metadata['InstrumentID'] = self.ox.instrument(self.imageseries).get_ID()
@@ -103,6 +105,11 @@ class OMETIFFReader:
             metadata['DetectorModel'] = None
             metadata['DetectorID'] = None
             metadata['DetectorModel'] = None
+            
+        try:
+            metadata["MicroscopeType"] = self.ox.instrument(self.imageseries).Microscope.get_Type()
+        except (KeyError, AttributeError) as e:
+            print("key not found", e)
     
         try:
             metadata['ObjNA'] = self.ox.instrument(self.imageseries).Objective.get_LensNA()
@@ -118,7 +125,7 @@ class OMETIFFReader:
         for c in range(metadata['SizeC']):
             metadata['Channels'].append(self.ox.image(self.imageseries).Pixels.Channel(c).Name)
             
-        return metadata            
+        return metadata      
 
     @classmethod
     def _open_tiff(cls, fpath):
@@ -155,13 +162,15 @@ class OMETIFFReader:
                     'SizeS': 1,
                     'SizeB': 1,
                     'SizeM': 1,
+                    'PhysicalSizeX': None,
+                    'PhysicalSizeXUnit': None,
+                    'PhysicalSizeY': None,
+                    'PhysicalSizeYUnit': None,
+                    'PhysicalSizeZ': None,
+                    'PhysicalSizeZUnit': None,
                     'Sizes BF': None,
                     'DimOrder BF': None,
                     'DimOrder BF Array': None,
-                    'Axes_czifile': None,
-                    'Shape_czifile': None,
-                    'czi_isRGB': None,
-                    'czi_isMosaic': None,
                     'ObjNA': [],
                     'ObjMag': [],
                     'ObjID': [],
@@ -169,17 +178,12 @@ class OMETIFFReader:
                     'ObjImmersion': [],
                     'TubelensMag': [],
                     'ObjNominalMag': [],
-                    'XScale': None,
-                    'YScale': None,
-                    'ZScale': None,
-                    'XScaleUnit': None,
-                    'YScaleUnit': None,
-                    'ZScaleUnit': None,
                     'DetectorModel': [],
                     'DetectorName': [],
                     'DetectorID': [],
                     'DetectorType': [],
                     'InstrumentID': [],
+                    "MicroscopeType": [],
                     'Channels': [],
                     # 'ChannelNames': [],
                     # 'ChannelColors': [],
