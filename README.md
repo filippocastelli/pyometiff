@@ -1,3 +1,8 @@
+## About
+
+`pyometiff` is a Python library for reading and writing OME-TIFF files that
+are compliant with the OME-XML specifications.
+
 ## Installation
 
 Run the following to install:
