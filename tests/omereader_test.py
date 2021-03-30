@@ -1,21 +1,18 @@
 import os,sys,inspect
+from pathlib import Path
+import pytest
+from mock import patch
+
+import numpy as np
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
 from pyometiff.omereader import OMETIFFReader
-import numpy as np
-
-from pathlib import Path
-import pathlib
 
 parentdir_path = Path(parentdir)
 test_img_path = parentdir_path.joinpath("tests/cell.ome.tiff")
 
-import pudb
-import pytest
-import mock
-from mock import patch
 
 class mockedOMEXML:
     
@@ -60,6 +57,8 @@ class mockedOMEXML:
                 return "objective_ID"
             def get_LensNA():
                 return "lens_NA"
+            def get_NominalMagnification():
+                return "nominal_magnification"
             
         class Microscope:
             def __init__(self):
@@ -127,7 +126,3 @@ class TestOMETIFFReader:
         reader = OMETIFFReader(fpath=test_img_path)
         # pudb.set_trace()
         array, metadata, omexml_string = reader.read()
-        
-    
-        
-    
