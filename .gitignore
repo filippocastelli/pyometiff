@@ -4,3 +4,5 @@ dist
 *.pyc
 clean_build.sh
 pyometiff/pyometiff.egg-info
+pyometiff/__pycache__
+tests/__pycache__
