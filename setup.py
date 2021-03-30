@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
       name="pyometiff",
       version="0.0.1",
@@ -14,4 +17,14 @@ setup(
           "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
           # "Operating System :: Os Independent",
           ],
+      long_description=long_description,
+      long_description_content_type="text/markdown",
+      install_requires=["numpy",
+                        "tifffile>2020.10.1"],
+      extras_require={
+          "dev": ["pytest>3.7",],
+          },
+      url="https://github.com/filippocastelli/pyometiff",
+      author="Filippo Maria Castelli",
+      author_email="castelli@lens.unifi.it",
       )
