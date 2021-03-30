@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from pyometiff import __version__
 
 with open("README.md", "r") as fh:
@@ -8,7 +8,8 @@ setup(
       name="pyometiff",
       version=__version__,
       description="Read and Write OME-TIFFs in Python",
-      py_modules = ["omereader", "omewriter", "omexml"],
+      packages=find_packages("pyometiff"),
+      # py_modules = ["omereader", "omewriter", "omexml"],
       package_dir = {"": "pyometiff"},
       classifiers=[
           "Programming Language :: Python :: 3",
