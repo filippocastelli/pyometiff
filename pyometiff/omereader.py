@@ -1,6 +1,7 @@
 from pathlib import Path
+import pathlib
 from lxml import etree as ET
-
+import pudb
 # from functools import wraps
 
 from omexml import OMEXML
@@ -9,11 +10,14 @@ import tifffile
 import numpy as np
 
 class OMETIFFReader:
-    def __init__(self, fpath, imageseries=0):
+    def __init__(self,
+                 fpath: pathlib.PosixPath,
+                 imageseries: int = 0):
+        
         self.fpath = Path(fpath)
         self.imageseries = imageseries
 
-    def read(self):
+    def read(self) -> (np.ndarray, dict, str):
         self.array, self.omexml_string = self._open_tiff(self.fpath)
         self.metadata = self.parse_metadata(self.omexml_string)
         return self.array, self.metadata, self.omexml_string
@@ -28,7 +32,6 @@ class OMETIFFReader:
     def parse_metadata(self, omexml_string):
         self.ox = OMEXML(self.omexml_string)
         metadata = self._get_metadata_template()
-
         metadata["Directory"] = str(self.fpath.parent)
         metadata["Filename"] = str(self.fpath.name)
         metadata["Extension"] = "ome.tiff"
@@ -107,14 +110,14 @@ class OMETIFFReader:
             metadata["DetectorID"] = self.ox.instrument(
                 self.imageseries
             ).Detector.get_ID()
-            metadata["DetectorModel"] = self.ox.instrument(
+            metadata["DetectorType"] = self.ox.instrument(
                 self.imageseries
             ).Detector.get_Type()
         except (KeyError, AttributeError) as e:
             print("Key not found:", e)
             metadata["DetectorModel"] = None
             metadata["DetectorID"] = None
-            metadata["DetectorModel"] = None
+            metadata["DetectorType"] = None
 
         try:
             metadata["MicroscopeType"] = self.ox.instrument(
@@ -146,23 +149,23 @@ class OMETIFFReader:
         return metadata
 
     @classmethod
-    def _open_tiff(cls, fpath):
+    def _open_tiff(cls, fpath: pathlib.PosixPath) -> (np.ndarray, str):
         with tifffile.TiffFile(str(fpath)) as tif:
             omexml_string = tif.ome_metadata
             array = tif.asarray()
 
-        array = cls._adjust_array_dims(array)
+        # array = cls._adjust_array_dims(array)
         return array, omexml_string
 
-    @staticmethod
-    def _adjust_array_dims(array, n_ch=1, n_t=1, n_z=1):
-        if n_ch == 1:
-            array = np.expand_dims(array, axis=-3)
-        if n_z == 1:
-            array = np.expand_dims(array, axis=-4)
-        if n_t == 1:
-            array = np.expand_dims(array, axis=-5)
-        return array
+    # @staticmethod
+    # def _adjust_array_dims(array, n_ch=1, n_t=1, n_z=1):
+    #     if n_ch == 1:
+    #         array = np.expand_dims(array, axis=-3)
+    #     if n_z == 1:
+    #         array = np.expand_dims(array, axis=-4)
+    #     if n_t == 1:
+    #         array = np.expand_dims(array, axis=-5)
+    #     return array
 
     @staticmethod
     def _get_metadata_template():
