@@ -1,14 +1,15 @@
 from setuptools import setup
+from pyometiff import __version__
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
       name="pyometiff",
-      version="0.0.1",
+      version=__version__,
       description="Read and Write OME-TIFFs in Python",
       py_modules = ["omereader", "omewriter", "omexml"],
-      package_dir = {"": "src"},
+      package_dir = {"": "pyometiff"},
       classifiers=[
           "Programming Language :: Python :: 3",
           "Programming Language :: Python :: 3.6",

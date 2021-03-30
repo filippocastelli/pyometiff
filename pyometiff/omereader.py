@@ -3,7 +3,7 @@ from lxml import etree as ET
 
 # from functools import wraps
 
-from omexml import OMEXML
+from .omexml import OMEXML
 
 import tifffile
 import numpy as np
