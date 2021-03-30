@@ -2,3 +2,5 @@ __pycache__
 build
 dist
 *.pyc
+clean_build.sh
+pyometiff/pyometiff.egg-info
