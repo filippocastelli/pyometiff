@@ -1,3 +1,16 @@
+# pyometiff is distributed under the GNU General Public
+# License v3.0, but this file is licensed under the more permissive BSD
+# license.  See the accompanying file LICENSE for details.
+#
+# Copyright (c) 2021 Filippo Maria Castelli
+# All rights reserved.
+
+# This file is based on CellProfiler/python-bioformats
+# https://github.com/CellProfiler/python-bioformats/blob/master/bioformats/omexml.py
+# commit 802eb4b
+
+# ORIGINAL LICENSE
+
 # Python-bioformats is distributed under the GNU General Public
 # License, but this file is licensed under the more permissive BSD
 # license.  See the accompanying file LICENSE for details.
@@ -5,12 +18,8 @@
 # Copyright (c) 2009-2014 Broad Institute
 # All rights reserved.
 
-# This file is based on CellProfiler/python-bioformats
-# https://github.com/CellProfiler/python-bioformats/blob/master/bioformats/omexml.py
-# commit 802eb4b
 
 """omexml.py read and write OME xml
-
 """
 
 from __future__ import absolute_import, unicode_literals

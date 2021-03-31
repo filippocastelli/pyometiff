@@ -82,6 +82,14 @@ writer = OMETIFFWriter(
 
 writer.write()
 ```
+## Licensing and Acknowledements
+pyometiff is distributed under the GNU General Public License v3.0 (GNU GPLv3),
+see the LICENSE file for further information.
+
+This implementation is partially based on [AICSIMAGEIO](https://github.com/AllenCellModeling/aicsimageio)
+by the Allan Institute for Cell Science and [python-bioformats](https://github.com/CellProfiler/python-bioformats)
+by the Broad Institute: the relative Licensing and Copyright notices are included
+in the License file.
 
 ## External Resources
 - [The Open Microscopy Environment - OME](https://www.openmicroscopy.org/)

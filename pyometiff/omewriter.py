@@ -1,9 +1,26 @@
+# This file is part of the pyometiff library.
+
+# pyometiff is distributed under the GNU General Public License v3.0 (GNU GPLv3),
+# specific files are distributed under different licenses, please refer to the
+# file header.
+
+# Modification and redistribution is possible under the terms of the applied 
+# license agreement.
+
+# This software is distributed WITHOUT ANY WARRANTY.
+# See the GNU General Public License v3.0 for further details.
+
+# A copy of the GNU General Public License v3.0 should be included in pyometiff,
+# if you didn't receive a copy, visit <http://www.gnu.org/licenses/>.
+
+# Copyright (c) 2021, Filippo Maria Castelli
+
 from pathlib import Path
 from lxml import etree as ET
 import numpy as np
 import tifffile
 from omexml import OMEXML, get_pixel_type
-import pudb
+# import pudb
 BYTE_BOUNDARY = 2 ** 21
 
 
