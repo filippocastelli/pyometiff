@@ -542,7 +542,92 @@ class OMEXML(object):
         def set_SamplesPerPixel(self, value):
             self.node.set("SamplesPerPixel", str(value))
         SamplesPerPixel = property(get_SamplesPerPixel, set_SamplesPerPixel)
-
+        
+        # IllumationType
+        def get_IlluminationType(self):
+            return self.node.get("IlluminationType")
+        def set_IlluminationType(self, value):
+            self.node.set("IlluminationType", value)
+        IlluminationType = property(get_IlluminationType, set_IlluminationType)
+        
+        # PinHoleSize
+        def get_PinHoleSize(self):
+            return get_float_attr(self.node, "PinHoleSize")
+        def set_PinHoleSize(self, value):
+            self.node.set("PinHoleSize", str(value))
+        PinHoleSize = property(get_PinHoleSize, set_PinHoleSize)
+        
+        # PinHoleSizeUnit
+        def get_PinHoleSizeUnit(self):
+            return self.node.get("PinHoleSizeUnit")
+        def set_PinHoleSizeUnit(self, value):
+            self.node.set("PinHoleSizeUnit", value)
+        PinHoleSizeUnit = property(get_PinHoleSizeUnit, set_PinHoleSizeUnit)
+        
+        # ContrastMethod
+        def get_ContrastMethod(self):
+            return self.node.get("ContrastMethod")
+        def set_ContrastMethod(self, value):
+            self.node.set("ContrastMethod", value)
+        ContrastMethod = property(get_ContrastMethod, set_ContrastMethod)
+        
+        # ExcitationWavelength
+        def get_ExcitationWavelength(self):
+            return get_float_attr(self.node, "ExcitationWavelength")
+        def set_ExcitationWavelength(self, value):
+            self.node.set("ExcitationWavelength", str(value))
+        ExcitationWavelength = property(get_ExcitationWavelength, set_ExcitationWavelength)
+        
+        # ExcitationWavelengthUnit
+        def get_ExcitationWavelengthUnit(self):
+            return self.node.get("ExcitationWavelengthUnit")
+        def set_ExcitationWavelengthUnit(self, value):
+            self.node.set("ExcitationWavelengthUnit", value)
+        ExcitationWavelengthUnit = property(get_ExcitationWavelengthUnit, set_ExcitationWavelengthUnit)
+        
+        # EmissionWavelength
+        def get_EmissionWavelength(self):
+            return get_float_attr(self.node, "EmissionWavelength")
+        def set_EmissionWavelength(self, value):
+            self.node.set("EmissionWavelength", str(value))
+        EmissionWavelength = property(get_EmissionWavelength, set_EmissionWavelength)
+        
+        # EmissionWavelengthUnit
+        def get_EmissionWavelengthUnit(self):
+            return self.node.get("EmissionWavelengthUnit")
+        def set_EmissionWavelengthUnit(self, value):
+            self.node.set("EmissionWavelengthUnit", value)
+        EmissionWavelengthUnit = property(get_EmissionWavelengthUnit, set_EmissionWavelengthUnit)
+        
+        # Fluor
+        def get_Fluor(self):
+            return self.node.get("Fluor")
+        def set_Fluor(self, value):
+            self.node.set("Fluor", value)
+        Fluor = property(get_Fluor, set_Fluor)
+                
+        # NDFilter
+        def get_NDFilter(self):
+            return self.node.get("NDFilter")
+        def set_NDFilter(self, value):
+            self.node.set("NDFilter", value)
+        NDFilter = property(get_NDFilter, set_NDFilter)
+        
+        # PockelCellSetting
+        def get_PockelCellSetting(self):
+            return self.node.get("PockelCellSetting")
+        def set_PockelCellSetting(self, value):
+            self.node.set("PockelCellSetting", value)
+        PockelCellSetting = property(get_PockelCellSetting, set_PockelCellSetting)
+        
+        # Color
+        def get_Color(self):
+            return self.node.get("Color")
+        def set_Color(self, value):
+            self.node.set("Color", value)
+        Color = property(get_Color, set_Color)
+        
+        
     #---------------------
     # The following section is from the Allen Institute for Cell Science version of this file
     # which can be found at https://github.com/AllenCellModeling/aicsimageio/blob/master/aicsimageio/vendor/omexml.py

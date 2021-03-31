@@ -55,9 +55,19 @@ npy_metadata_dict = {'Directory': None,
         # 'InstrumentID': [],
         # "MicroscopeType": [],
         'Channels': {
-            "405": {"SamplesPerPixel": 1},
-            "488": {"SamplesPerPixel": 1},
-            "638": {"SamplesPerPixel": 1}},
+            "405": {"Name": "405",
+                    "SamplesPerPixel": 1,
+                    "ExcitationWavelength": 405.,
+                    "ExcitationWavelengthUnit": "nm"},
+            "488": {"Name": "488",
+                    "SamplesPerPixel": 1,
+                    "ExcitationWavelength": 488.,
+                    "ExcitationWavelengthUnit": "nm"},
+            "638": {"Name": "638",
+                    "SamplesPerPixel": 1,
+                    "ExcitationWavelength": 638.,
+                    "ExcitationWavelengthUnit": "nm"},
+                        }
         # 'ChannelNames': [],
         # 'ChannelColors': [],
         # 'ImageIDs': [],
@@ -156,7 +166,7 @@ class TestOMETIFFWriter:
         # paths
         assert str(test_out_path.name) == metadata_readback["Filename"], "Different filename retrieved"
         assert str(test_out_path.parent) == metadata_readback["Directory"], "Different directory retrieved"
-        
+
         # pudb.set_trace()
         
     @staticmethod
