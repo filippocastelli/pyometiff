@@ -92,7 +92,7 @@ class OMETIFFReader:
 
         # DimOrder custom field
         metadata["DimOrder"] = metadata["DimOrder BF Array"]
-
+        
         # get all image IDs
         for i in range(self.ox.get_image_count()):
             metadata["ImageIDs"].append(i)
@@ -100,7 +100,7 @@ class OMETIFFReader:
         # get information about the instrument and objective
         try:
             metadata["InstrumentID"] = self.ox.instrument(self.imageseries).get_ID()
-        except (KeyError, AttributeError) as e:
+        except (KeyError, AttributeError, IndexError) as e:
             print("Key not found:", e)
             metadata["InstrumentID"] = None
         try:
@@ -113,7 +113,7 @@ class OMETIFFReader:
             metadata["DetectorType"] = self.ox.instrument(
                 self.imageseries
             ).Detector.get_Type()
-        except (KeyError, AttributeError) as e:
+        except (KeyError, AttributeError, IndexError) as e:
             print("Key not found:", e)
             metadata["DetectorModel"] = None
             metadata["DetectorID"] = None
@@ -123,7 +123,7 @@ class OMETIFFReader:
             metadata["MicroscopeType"] = self.ox.instrument(
                 self.imageseries
             ).Microscope.get_Type()
-        except (KeyError, AttributeError) as e:
+        except (KeyError, AttributeError, IndexError) as e:
             print("key not found", e)
 
         try:
@@ -134,20 +134,62 @@ class OMETIFFReader:
             metadata["ObjMag"] = self.ox.instrument(
                 self.imageseries
             ).Objective.get_NominalMagnification()
-        except (KeyError, AttributeError) as e:
+        except (KeyError, AttributeError, IndexError) as e:
             print("Key not found:", e)
             metadata["ObjNA"] = None
             metadata["ObjID"] = None
             metadata["ObjMag"] = None
 
         # get channel names
-        for c in range(metadata["SizeC"]):
-            metadata["Channels"].append(
-                self.ox.image(self.imageseries).Pixels.Channel(c).Name
-            )
-
+        metadata["Channels"] = self._parse_channels(metadata["SizeC"], self.ox, self.imageseries)
+        # for c in range(metadata["SizeC"]):
+        #     channel_names.append(
+        #         self.ox.image(self.imageseries).Pixels.Channel(c).Name
+        #     )
+            
+        #     self.ox.image(self.imageseries).Pixels.Channel(c).
+        metadata = self._remove_none_or_empty_dict(metadata)
         return metadata
-
+    
+    @classmethod
+    def _parse_channels(cls, sizeC, ox, imageseries):
+        channels_dict = {}
+        for c in range(sizeC):
+            channel_obj = ox.image(imageseries).Pixels.Channel(c)
+            channel_name = channel_obj.Name
+            channel_dict = {}
+            for attr in ["Name",
+                         "ID",
+                         "SamplesPerPixel",
+                         "IlluminationType,",
+                         "PinHoleSize",
+                         "PinHoleSizeUnit",
+                         "AcquisitionMode",
+                         "ContrastMethod",
+                         "ExcitationWavelength",
+                         "ExcitationWavelengthUnit",
+                         "EmissionWavelength",
+                         "EmissionWavelengthUnit",
+                         "Fluor",
+                         "NDFilter",
+                         "PockelCellSetting",
+                         "Color"
+                         ]:
+                if hasattr(channel_obj, attr):
+                    val = getattr(channel_obj, attr)
+                    channel_dict[attr] = val
+                channel_dict = cls._remove_none_or_empty_dict(channel_dict)
+            channels_dict[channel_name] = channel_dict
+            
+        return channels_dict
+            
+        
+        
+    @staticmethod
+    def _remove_none_or_empty_dict(dictionary):
+        return {key : item for key, item in dictionary.items() if (item != []) and (item != None)}
+        
+        
     @classmethod
     def _open_tiff(cls, fpath: pathlib.PosixPath) -> (np.ndarray, str):
         with tifffile.TiffFile(str(fpath)) as tif:
@@ -210,7 +252,7 @@ class OMETIFFReader:
             # 'ChannelNames': [],
             # 'ChannelColors': [],
             "ImageIDs": [],
-            "NumPy.dtype": None,
+            # "NumPy.dtype": None,
         }
 
         return metadata

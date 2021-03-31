@@ -3,7 +3,7 @@ from lxml import etree as ET
 import numpy as np
 import tifffile
 from omexml import OMEXML, get_pixel_type
-
+import pudb
 BYTE_BOUNDARY = 2 ** 21
 
 
@@ -76,9 +76,10 @@ class OMETIFFWriter:
         # trying first to set all items
         error_keys = []
         metadata_dict_cpy = self.metadata.copy()
-
-        channels_dict = metadata_dict_cpy.pop("Channels", None)
-
+        
+        exp_keys = ["Channels", "Name"]
+        pop_expected_keys = {key: metadata_dict_cpy.pop(key, None) for key in exp_keys}
+        
         for key, item in metadata_dict_cpy.items():
             try:
                 setattr(pixels, key, item)
@@ -105,13 +106,14 @@ class OMETIFFWriter:
         # convert numpy dtype to a compatibile pixeltype
         pixels.set_PixelType(get_pixel_type(self._array.dtype))
 
-        if channels_dict is not None:
+        if pop_expected_keys["Channels"] is not None:
+            channels_dict = pop_expected_keys["Channels"]
             assert (
                 len(channels_dict.keys()) == pixels.SizeC
             ), "Channel label count is differnt than channel count"
             self._parse_channel_dict(pixels, channels_dict)
         else:
-            for i in range(pixels.sizeC):
+            for i in range(pixels.SizeC):
                 pixels.Channel(i).set_ID("Channel:0:" + str(i))
                 pixels.Channel(i).set_Name("C:" + str(i))
 
@@ -216,59 +218,3 @@ class OMETIFFWriter:
                 dimension_order = "T" + dimension_order
 
         return array, dimension_order
-
-
-# #%%
-# basepath = Path("/home/phil/Scrivania")
-# fpath = basepath.joinpath("out.ome.tiff")
-
-# array = np.zeros(shape=(2, 10, 2, 20, 20))
-
-# metadata = {'Directory': None,
-#         # 'Filename': None,
-#         # 'Extension': None,
-#         # 'ImageType': None,
-#         # 'AcqDate': None,
-#         # 'TotalSeries': None,
-#         # 'SizeX': None,
-#         # 'SizeY': None,
-#         # 'SizeZ': 1,
-#         # 'SizeC': 1,
-#         # 'SizeT': 1,
-#         # 'SizeS': 1,
-#         # 'SizeB': 1,
-#         # 'SizeM': 1,
-#         'PhysicalSizeX': 1,
-#         'PhysicalSizeXUnit': "µm",
-#         'PhysicalSizeY': 1,
-#         'PhysicalSizeYUnit': "µm",
-#         'PhysicalSizeZ': 1,
-#         'PhysicalSizeZUnit': "µm",
-#         # 'Sizes BF': None,
-#         # 'DimOrder BF': None,
-#         # 'DimOrder BF Array': None,
-#         # 'ObjNA': [],
-#         # 'ObjMag': [],
-#         # 'ObjID': [],
-#         # 'ObjName': [],
-#         # 'ObjImmersion': [],
-#         # 'TubelensMag': [],
-#         # 'ObjNominalMag': [],
-#         # 'DetectorModel': [],
-#         # 'DetectorName': [],
-#         # 'DetectorID': [],
-#         # 'DetectorType': [],
-#         # 'InstrumentID': [],
-#         # "MicroscopeType": [],
-#         'Channels': {
-#             "488": {"SamplesPerPixel": 1},
-#             "638": {"SamplesPerPixel": 1}},
-#         # 'ChannelNames': [],
-#         # 'ChannelColors': [],
-#         # 'ImageIDs': [],
-#         # 'NumPy.dtype': None
-#         }
-
-# writer = OMETIFFWriter(fpath, array, metadata, dimension_order="STZCYX")
-# writer.write()
-# writer.write_xml()
