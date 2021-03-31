@@ -88,13 +88,9 @@ writer.write()
 see the [LICENSE](LICENSE) file for further information.
 
 This implementation is partially based on
-[AICSIMAGEIO](https://github.com/AllenCellModeling/aicsimageio)
-by the Allan Institute for Cell Science and
-[python-bioformats](https://github.com/CellProfiler/python-bioformats)
-by the Broad Institute.
+[aicsimageio](https://github.com/AllenCellModeling/aicsimageio) by the Allan Institute for Cell Science and [python-bioformats](https://github.com/CellProfiler/python-bioformats) by the Broad Institute, part of the CellProfiler project.
 
-The relative Licensing and Copyright notices are included
-in the License file.
+The relative licensing and copyright notices are included in the [LICENSE](LICENSE) file.
 
 ## External Resources
 - [The Open Microscopy Environment - OME](https://www.openmicroscopy.org/)
