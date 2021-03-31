@@ -3,6 +3,8 @@
 `pyometiff` is a Python library for reading and writing OME-TIFF files that
 are compliant with the OME-XML specifications.
 
+`pyometiff` tries to cover most of the tags in the latest [OMEXML format specification](https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome.html), while most of the available Python conversion tools are often missing key tags like `PhysicalSizeXUnit` which are fundamental in any microscopy environment.
+
 ## Installation
 
 Run the following to install:
@@ -80,6 +82,13 @@ writer = OMETIFFWriter(
 
 writer.write()
 ```
+
+## External Resources
+- [The Open Microscopy Environment - OME](https://www.openmicroscopy.org/)
+- [OME-TIFF format](https://docs.openmicroscopy.org/ome-model/5.6.3/ome-tiff/)
+- [OME-TIFF specification](https://docs.openmicroscopy.org/ome-model/5.5.7/ome-tiff/specification.html)
+- [OME-XML format](https://docs.openmicroscopy.org/ome-model/5.6.3/ome-xml/)
+- [OME-XML schema specification](https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome.html)
 
 ## Contacts
 
