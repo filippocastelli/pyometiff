@@ -1,0 +1,5 @@
+lxml
+tifffile
+numpy
+pytest
+mock
