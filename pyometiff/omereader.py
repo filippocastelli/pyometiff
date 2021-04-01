@@ -20,7 +20,7 @@ from pathlib import Path
 import pathlib
 from lxml import etree as ET
 
-from omexml import OMEXML
+from pyometiff.omexml import OMEXML
 
 import tifffile
 import numpy as np
