@@ -52,7 +52,7 @@ class OMETIFFReader:
         metadata["Filename"] = str(self.fpath.name)
         metadata["Extension"] = "ome.tiff"
         metadata["ImageType"] = "ometiff"
-        metadata["AcqDate"] = self.ox.image(self.imageseries).AcquisitionDate
+        metadata["AcquisitionDate"] = self.ox.image(self.imageseries).AcquisitionDate
         metadata["Name"] = self.ox.image(self.imageseries).Name
 
         # image dimensions

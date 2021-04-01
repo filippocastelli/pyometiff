@@ -84,7 +84,6 @@ https://docs.openmicroscopy.org/latest/ome-model/ome-tiff/ -->
             </Channel>
         </Pixels>
     </Image>
-  <StructuredAnnotations xmlns="{ns_sa_default}s"/>
 </OME>""".format(ns_ome_default=NS_DEFAULT.format(ns_key='ome'), ns_sa_default=NS_DEFAULT.format(ns_key='sa'))
 
 #

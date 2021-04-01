@@ -19,7 +19,7 @@ from pathlib import Path
 from lxml import etree as ET
 import numpy as np
 import tifffile
-from pyometiff.omexml import OMEXML, get_pixel_type
+from pyometiff.omexml import OMEXML, get_pixel_type, xsd_now
 
 BYTE_BOUNDARY = 2 ** 21
 
@@ -84,18 +84,24 @@ class OMETIFFWriter:
 
     def gen_meta(self):
         ox = OMEXML()
-        ox.image().set_ID("0")
+        ox.image().set_ID("Image:0")
+        
         pixels = ox.image().Pixels
 
         # pixels.ome_uuid = ox.uuidStr
-        pixels.set_ID("0")
+        pixels.set_ID("Pixels:0")
 
         # trying first to set all items
         error_keys = []
         metadata_dict_cpy = self.metadata.copy()
         
-        exp_keys = ["Channels", "Name"]
+        exp_keys = ["Channels", "Name", "AcquisitionDate"]
         pop_expected_keys = {key: metadata_dict_cpy.pop(key, None) for key in exp_keys}
+        
+        # set image acquisitiondate
+        acq_date = pop_expected_keys["AcquisitionDate"]
+        acq_date = acq_date if acq_date is not None else xsd_now()
+        ox.image().set_AcquisitionDate(acq_date)
         
         for key, item in metadata_dict_cpy.items():
             try:
