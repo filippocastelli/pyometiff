@@ -18,8 +18,6 @@
 import os,sys,inspect
 from pathlib import Path
 import pytest
-from mock import patch
-import pudb
 import tifffile
 import numpy as np
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))

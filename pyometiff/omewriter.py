@@ -20,7 +20,7 @@ from lxml import etree as ET
 import numpy as np
 import tifffile
 from omexml import OMEXML, get_pixel_type
-# import pudb
+
 BYTE_BOUNDARY = 2 ** 21
 
 
