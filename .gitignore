@@ -5,3 +5,4 @@ dist
 clean_build.sh
 *.egg-info
 venv
+test_out.ome.*
