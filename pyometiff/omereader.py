@@ -24,6 +24,7 @@ from pyometiff.omexml import OMEXML
 
 import tifffile
 import numpy as np
+import logging
 
 class OMETIFFReader:
     def __init__(self,
@@ -46,6 +47,9 @@ class OMETIFFReader:
         tree.write(str(xml_fpath), encoding="utf-8", method="xml", pretty_print=True)
 
     def parse_metadata(self, omexml_string):
+        if omexml_string is None:
+            logging.warning("File {} has no OME-XML tags!".format(str(self.fpath)))
+            return None
         self.ox = OMEXML(self.omexml_string)
         metadata = self._get_metadata_template()
         metadata["Directory"] = str(self.fpath.parent)
