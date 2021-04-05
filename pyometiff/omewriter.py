@@ -133,7 +133,7 @@ class OMETIFFWriter:
             channels_dict = pop_expected_keys["Channels"]
             assert (
                 len(channels_dict.keys()) == pixels.SizeC
-            ), "Channel label count is differnt than channel count"
+            ), "Channel label count is different than channel count"
             self._parse_channel_dict(pixels, channels_dict)
         else:
             for i in range(pixels.SizeC):
