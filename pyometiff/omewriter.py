@@ -105,6 +105,11 @@ class OMETIFFWriter:
         acq_date = acq_date if acq_date is not None else xsd_now()
         ox.image().set_AcquisitionDate(acq_date)
         
+        img_name = pop_expected_keys["Name"]
+        img_name = img_name if img_name is not None else "pyometiff_exported"
+        
+        ox.image().set_Name(img_name)
+        
         for key, item in metadata_dict_cpy.items():
             try:
                 setattr(pixels, key, item)
