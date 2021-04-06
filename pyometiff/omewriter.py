@@ -44,15 +44,17 @@ class OMETIFFWriter:
         overwrite=False,
         dimension_order="STZCYX",
         photometric="minisblack",
+        explicit_tiffdata=False
+        
     ):
-
         self.fpath = Path(fpath)
         self.array = array
         self.metadata = metadata
         self.overwrite = overwrite
         self.dimension_order = dimension_order
         self.photometric = photometric
-
+        self.explicit_tiffdata = explicit_tiffdata
+        
     def write(self):
         self._array, self._dimension_order = self._adjust_dims(
             self.array, self.dimension_order
@@ -140,7 +142,7 @@ class OMETIFFWriter:
                 pixels.Channel(i).set_ID("Channel:0:" + str(i))
                 pixels.Channel(i).set_Name("C:" + str(i))
 
-        pixels.populate_TiffData()
+        pixels.populate_TiffData(explicit=self.explicit_tiffdata)
 
         return ox
 

@@ -44,7 +44,8 @@ writer = OMETIFFWriter(
     fpath=output_fpath,
     dimension_order=dimension_order,
     array=npy_array_data,
-    metadata=metadata_dict)
+    metadata=metadata_dict,
+    explicit_tiffdata=False)
 
 writer.write()
 writer.write_xml()

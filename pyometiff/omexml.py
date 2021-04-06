@@ -1035,46 +1035,56 @@ class OMEXML(object):
             return OMEXML.TiffData(tiffData)
         
         # adaoted from AICSIMAGEIO
-        def populate_TiffData(self):
+        def populate_TiffData(self, explicit=False):
             assert self.SizeC is not None
             assert self.SizeZ is not None
             assert self.SizeT is not None
-            # total = self.SizeC * self.SizeT * self.SizeZ
+            total = self.SizeC * self.SizeT * self.SizeZ
             
-            # bye bye tiffdatas
+            # bye bye old tiffdatas
             tiffdatas = self.node.findall(qn(self.ns['ome'], "TiffData"))
-            for td in tiffdatas:
-                self.node.remove(td)
             
-            sizes = {
-                "Z" : self.SizeZ,
-                "C" : self.SizeC,
-                "T" : self.SizeT}
-            
-            setters = {
-                "Z": OMEXML.TiffData.set_FirstZ,
-                "C": OMEXML.TiffData.set_FirstC,
-                "T": OMEXML.TiffData.set_FirstT,
-            }
-            dims = self.DimensionOrder[-3:]
-            ifd = 0
-            for i in range(sizes[dims[2]]):
-                for j in range(sizes[dims[1]]):
-                    for k in range(sizes[dims[0]]):
-                        new_tiffdata = OMEXML.TiffData(
-                            ElementTree.SubElement(self.node, qn(self.ns['ome'], "TiffData")))
-                        setters[dims[2]](new_tiffdata, i)
-                        setters[dims[1]](new_tiffdata, j)
-                        setters[dims[0]](new_tiffdata, k)
-                        new_tiffdata.set_IFD(ifd)
-                        new_tiffdata.set_PlaneCount(1)
-                        # child element <UUID FileName=""></UUID> is omitted here for single file ome tiffs
-                        # UUID has an optional FileName attribute for image data that
-                        # are split among several files but we do not currently support it.
-                        # uuidelem = ElementTree.SubElement(new_tiffdata.node, qn(self.ns['ome'], "UUID"))
-                        # uuidelem.text = self.ome_uuid
-                        ifd = ifd + 1
+            if explicit:
+                for td in tiffdatas:
+                    self.node.remove(td)
                 
+                sizes = {
+                    "Z" : self.SizeZ,
+                    "C" : self.SizeC,
+                    "T" : self.SizeT}
+                
+                setters = {
+                    "Z": OMEXML.TiffData.set_FirstZ,
+                    "C": OMEXML.TiffData.set_FirstC,
+                    "T": OMEXML.TiffData.set_FirstT,
+                }
+                dims = self.DimensionOrder[-3:]
+                ifd = 0
+                for i in range(sizes[dims[2]]):
+                    for j in range(sizes[dims[1]]):
+                        for k in range(sizes[dims[0]]):
+                            new_tiffdata = OMEXML.TiffData(
+                                ElementTree.SubElement(self.node, qn(self.ns['ome'], "TiffData")))
+                            setters[dims[2]](new_tiffdata, i)
+                            setters[dims[1]](new_tiffdata, j)
+                            setters[dims[0]](new_tiffdata, k)
+                            new_tiffdata.set_IFD(ifd)
+                            new_tiffdata.set_PlaneCount(1)
+                            # child element <UUID FileName=""></UUID> is omitted here for single file ome tiffs
+                            # UUID has an optional FileName attribute for image data that
+                            # are split among several files but we do not currently support it.
+                            # uuidelem = ElementTree.SubElement(new_tiffdata.node, qn(self.ns['ome'], "UUID"))
+                            # uuidelem.text = self.ome_uuid
+                            ifd = ifd + 1
+            else:
+                # implicit only supports single-stack OME-XMLs (no multiple image stacks in same file)
+                new_tiffdata = OMEXML.TiffData(
+                ElementTree.SubElement(self.node, qn(self.ns["ome"], "TiffData"))
+                )
+                new_tiffdata.set_IFD(0)
+                new_tiffdata.set_PlaneCount(total) 
+            
+            
     class Instrument(object):
         '''Representation of the OME/Instrument element'''
         def __init__(self, node):
