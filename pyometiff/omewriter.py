@@ -188,8 +188,8 @@ class OMETIFFWriter:
         # ends in YX
         if dimension_order[-2:] != "YX":
             raise InvalidDimensionOrderingError(
-                "dimension_order {} expected to be YX. Please transpose your data".format(
-                    dimension_order
+                "the last two dimensions are expected to be YX, they are {} instead. Please transpose your data".format(
+                    dimension_order[-2:]
                 )
             )
 
