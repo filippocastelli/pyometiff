@@ -89,7 +89,7 @@ writer.write()
 see the [LICENSE](LICENSE) file for further information.
 
 This implementation is partially based on
-[aicsimageio](https://github.com/AllenCellModeling/aicsimageio) by the Allan Institute for Cell Science and [python-bioformats](https://github.com/CellProfiler/python-bioformats) by the Broad Institute, part of the CellProfiler project.
+[aicsimageio](https://github.com/AllenCellModeling/aicsimageio) by the Allen Institute for Cell Science and [python-bioformats](https://github.com/CellProfiler/python-bioformats) by the Broad Institute, part of the CellProfiler project.
 
 The relative licensing and copyright notices are included in the [LICENSE](LICENSE) file.
 
