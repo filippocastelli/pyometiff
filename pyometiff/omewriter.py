@@ -44,7 +44,8 @@ class OMETIFFWriter:
         overwrite=False,
         dimension_order="STZCYX",
         photometric="minisblack",
-        explicit_tiffdata=False
+        explicit_tiffdata=False,
+        compression=None
         
     ):
         self.fpath = Path(fpath)
@@ -54,6 +55,7 @@ class OMETIFFWriter:
         self.dimension_order = dimension_order
         self.photometric = photometric
         self.explicit_tiffdata = explicit_tiffdata
+        self.compression = compression
         
     def write(self):
         self._array, self._dimension_order = self._adjust_dims(
@@ -81,7 +83,7 @@ class OMETIFFWriter:
         self.use_bigtiff = True
         with tifffile.TiffWriter(str(self.fpath), bigtiff=self.use_bigtiff) as tif:
             tif.save(
-                array, description=xml_meta, photometric=self.photometric, metadata=None
+                array, description=xml_meta, photometric=self.photometric, metadata=None, compression=self.compression
             )
 
     def gen_meta(self):
@@ -115,7 +117,7 @@ class OMETIFFWriter:
                 setattr(pixels, key, item)
             except AttributeError:
                 error_keys.append(key)
-                print("could not set key {} to {}".forma(key, str(item)))
+                print("could not set key {} to {}".format(key, str(item)))
 
         shape = self._array.shape
 
