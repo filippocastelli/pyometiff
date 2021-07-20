@@ -79,7 +79,7 @@ writer = OMETIFFWriter(
     dimension_order=dimension_order,
     array=npy_array_data,
     metadata=metadata,
-    explicit_tiffile=False)
+    explicit_tiffdata=False)
 
 writer.write()
 ```
