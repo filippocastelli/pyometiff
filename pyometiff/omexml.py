@@ -1171,7 +1171,7 @@ class OMEXML(object):
         Model = property(get_Model, set_Model)
 
         def get_Type(self):
-            return get_int_attr(self.node, "Type")
+            return self.node.get("Type")
         def set_Type(self, value):
             self.node.set("Type", str(value))
         Type = property(get_Type, set_Type)
