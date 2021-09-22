@@ -38,13 +38,13 @@ class InvalidDimensionOrderingError(Exception):
 class OMETIFFWriter:
     def __init__(
         self,
-        fpath,
-        array,
-        metadata,
-        overwrite=False,
-        dimension_order="STZCYX",
-        photometric="minisblack",
-        explicit_tiffdata=False,
+        fpath: Path,
+        array: np.ndarray,
+        metadata: dict,
+        overwrite: bool = False,
+        dimension_order: str = "STZCYX",
+        photometric: str = "minisblack",
+        explicit_tiffdata: bool = False,
         compression=None
         
     ):

@@ -28,7 +28,7 @@ import logging
 
 class OMETIFFReader:
     def __init__(self,
-                 fpath: pathlib.PosixPath,
+                 fpath: pathlib.Path,
                  imageseries: int = 0):
         
         self.fpath = Path(fpath)
