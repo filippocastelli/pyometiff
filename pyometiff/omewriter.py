@@ -56,19 +56,22 @@ class OMETIFFWriter:
         self.photometric = photometric
         self.explicit_tiffdata = explicit_tiffdata
         self.compression = compression
-        
-    def write(self):
+
+        self.init_file()
+
+    def init_file(self):
         self._array, self._dimension_order = self._adjust_dims(
             self.array, self.dimension_order
         )
         self._ox = self.gen_meta()
         self._xml = self._ox.to_xml().encode()
+
+    def write(self):
         self.write_stack(self._array, self._xml)
 
-    def write_xml(self):
-        self._ox = self.gen_meta()
-        self._xml = self._ox.to_xml().encode()
-        xml_fpath = self.fpath.parent.joinpath(self.fpath.stem + ".xml")
+    def write_xml(self, xml_fpath: Path = None):
+        if xml_fpath is None:
+            xml_fpath = self.fpath.parent.joinpath(self.fpath.stem + ".xml")
         tree = ET.ElementTree(ET.fromstring(self._xml))
         tree.write(str(xml_fpath), encoding="utf-8", method="xml", pretty_print=True)
 
