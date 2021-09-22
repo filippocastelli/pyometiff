@@ -16,6 +16,7 @@
 # Copyright (c) 2021, Filippo Maria Castelli
 
 from pathlib import Path
+from typing import Union
 from lxml import etree as ET
 import numpy as np
 import tifffile
@@ -37,16 +38,17 @@ class InvalidDimensionOrderingError(Exception):
 
 class OMETIFFWriter:
     def __init__(
-        self,
-        fpath: Path,
-        array: np.ndarray,
-        metadata: dict,
-        overwrite: bool = False,
-        dimension_order: str = "STZCYX",
-        photometric: str = "minisblack",
-        explicit_tiffdata: bool = False,
-        compression=None
-        
+            self,
+            fpath: Path,
+            array: Union[np.ndarray, None],
+            metadata: dict,
+            overwrite: bool = False,
+            dimension_order: str = "STZCYX",
+            photometric: str = "minisblack",
+            explicit_tiffdata: bool = False,
+            compression: str = None,
+            arr_shape: Union[list, tuple] = None,
+
     ):
         self.fpath = Path(fpath)
         self.array = array
@@ -56,12 +58,15 @@ class OMETIFFWriter:
         self.photometric = photometric
         self.explicit_tiffdata = explicit_tiffdata
         self.compression = compression
+        self.arr_shape = arr_shape
 
         self.init_file()
 
     def init_file(self):
         self._array, self._dimension_order = self._adjust_dims(
-            self.array, self.dimension_order
+            array=self.array,
+            dimension_order=self.dimension_order,
+            shape=self.arr_shape
         )
         self._ox = self.gen_meta()
         self._xml = self._ox.to_xml().encode()
@@ -94,7 +99,7 @@ class OMETIFFWriter:
     def gen_meta(self):
         ox = OMEXML()
         ox.image().set_ID("Image:0")
-        
+
         pixels = ox.image().Pixels
 
         # pixels.ome_uuid = ox.uuidStr
@@ -103,20 +108,20 @@ class OMETIFFWriter:
         # trying first to set all items
         error_keys = []
         metadata_dict_cpy = self.metadata.copy()
-        
+
         exp_keys = ["Channels", "Name", "AcquisitionDate"]
         pop_expected_keys = {key: metadata_dict_cpy.pop(key, None) for key in exp_keys}
-        
+
         # set image acquisitiondate
         acq_date = pop_expected_keys["AcquisitionDate"]
         acq_date = acq_date if acq_date is not None else xsd_now()
         ox.image().set_AcquisitionDate(acq_date)
-        
+
         img_name = pop_expected_keys["Name"]
         img_name = img_name if img_name is not None else "pyometiff_exported"
-        
+
         ox.image().set_Name(img_name)
-        
+
         for key, item in metadata_dict_cpy.items():
             try:
                 setattr(pixels, key, item)
@@ -124,7 +129,10 @@ class OMETIFFWriter:
                 error_keys.append(key)
                 print("could not set key {} to {}".format(key, str(item)))
 
-        shape = self._array.shape
+        if self._array is not None:
+            shape = self._array.shape
+        else:
+            shape = self.arr_shape
 
         def _dim_or_1(dim):
             idx = self._dimension_order.find(dim)
@@ -141,12 +149,16 @@ class OMETIFFWriter:
         pixels.set_DimensionOrder(self._dimension_order[::-1])
 
         # convert numpy dtype to a compatibile pixeltype
-        pixels.set_PixelType(get_pixel_type(self._array.dtype))
+        if self._array is not None:
+            dtype = self._array.dtype
+        else:
+            dtype = np.dtype("uint16")
+        pixels.set_PixelType(get_pixel_type(dtype))
 
         if pop_expected_keys["Channels"] is not None:
             channels_dict = pop_expected_keys["Channels"]
             assert (
-                len(channels_dict.keys()) == pixels.SizeC
+                    len(channels_dict.keys()) == pixels.SizeC
             ), "Channel label count is different than channel count"
             self._parse_channel_dict(pixels, channels_dict)
         else:
@@ -180,8 +192,11 @@ class OMETIFFWriter:
             channels_ignored_keys[channel_name] = channel_ignored_keys
 
     @staticmethod
-    def _adjust_dims(array, dimension_order):
-        array_shape = array.shape
+    def _adjust_dims(array=None, dimension_order="ZYX", shape=None):
+        if array is not None:
+            array_shape = array.shape
+        else:
+            array_shape = shape
         ndims = len(array_shape)
 
         assert ndims in (3, 4, 5), "Expected a 3, 4, or 5-dimensional array"
@@ -232,8 +247,9 @@ class OMETIFFWriter:
         # expand 3D data to 5D
         if ndims == 3:
             # expand double
-            array = np.expand_dims(array, axis=0)
-            array = np.expand_dims(array, axis=0)
+            if array is not None:
+                array = np.expand_dims(array, axis=0)
+                array = np.expand_dims(array, axis=0)
             # prepend either TC, TZ or CZ
             if dimension_order[0] == "T":
                 dimension_order = "CZ" + dimension_order
@@ -244,7 +260,8 @@ class OMETIFFWriter:
 
         # if it's 4D expand to 5D
         elif ndims == 4:
-            array = np.expand_dims(array, axis=0)
+            if array is not None:
+                array = np.expand_dims(array, axis=0)
             # prepend either T, C, or Z
             first2 = dimension_order[:2]
             if first2 == "TC" or first2 == "CT":
