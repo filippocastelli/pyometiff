@@ -66,6 +66,8 @@ class OMETIFFWriter:
         self.write_stack(self._array, self._xml)
 
     def write_xml(self):
+        self._ox = self.gen_meta()
+        self._xml = self._ox.to_xml().encode()
         xml_fpath = self.fpath.parent.joinpath(self.fpath.stem + ".xml")
         tree = ET.ElementTree(ET.fromstring(self._xml))
         tree.write(str(xml_fpath), encoding="utf-8", method="xml", pretty_print=True)
