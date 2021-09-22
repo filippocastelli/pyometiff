@@ -250,6 +250,10 @@ class OMETIFFWriter:
             if array is not None:
                 array = np.expand_dims(array, axis=0)
                 array = np.expand_dims(array, axis=0)
+            else:
+                shape.insert(0, 1)
+                shape.insert(0, 1)
+
             # prepend either TC, TZ or CZ
             if dimension_order[0] == "T":
                 dimension_order = "CZ" + dimension_order
@@ -262,6 +266,8 @@ class OMETIFFWriter:
         elif ndims == 4:
             if array is not None:
                 array = np.expand_dims(array, axis=0)
+            else:
+                shape.insert(0, 1)
             # prepend either T, C, or Z
             first2 = dimension_order[:2]
             if first2 == "TC" or first2 == "CT":
