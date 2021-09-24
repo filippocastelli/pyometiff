@@ -391,6 +391,7 @@ class OMEXML(object):
         ElementTree.register_namespace("om", NS_ORIGINAL_METADATA)
         result = StringIO()
         ElementTree.ElementTree(self.root_node).write(result,
+                                                      xml_declaration=True,
                                                       encoding=uenc,
                                                       method="xml")
         return result.getvalue()
