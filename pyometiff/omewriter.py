@@ -78,7 +78,11 @@ class OMETIFFWriter:
         if xml_fpath is None:
             xml_fpath = self.fpath.parent.joinpath(self.fpath.stem + ".xml")
         tree = ET.ElementTree(ET.fromstring(self._xml))
-        tree.write(str(xml_fpath), encoding="utf-8", method="xml", pretty_print=True)
+        tree.write(str(xml_fpath),
+                   encoding="utf-8",
+                   method="xml",
+                   pretty_print=True,
+                   xml_declaration=True)
 
     @staticmethod
     def _use_bigtiff(array):
