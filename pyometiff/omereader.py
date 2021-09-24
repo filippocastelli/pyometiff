@@ -18,7 +18,7 @@
 
 from pathlib import Path
 import pathlib
-from lxml import etree as ET
+from lxml import etree as et
 
 from pyometiff.omexml import OMEXML
 
@@ -26,11 +26,12 @@ import tifffile
 import numpy as np
 import logging
 
+
 class OMETIFFReader:
     def __init__(self,
                  fpath: pathlib.Path,
                  imageseries: int = 0):
-        
+
         self.fpath = Path(fpath)
         self.imageseries = imageseries
 
@@ -43,7 +44,7 @@ class OMETIFFReader:
         if not hasattr(self, "omexml_string"):
             _, _, _ = self.read()
         xml_fpath = self.fpath.parent.joinpath(self.fpath.stem + ".xml")
-        tree = ET.ElementTree(ET.fromstring(self.omexml_string.encode("utf-8")))
+        tree = et.ElementTree(et.fromstring(self.omexml_string.encode("utf-8")))
         tree.write(str(xml_fpath), encoding="utf-8", method="xml", pretty_print=True)
 
     def parse_metadata(self, omexml_string):
@@ -112,7 +113,7 @@ class OMETIFFReader:
 
         # DimOrder custom field
         metadata["DimOrder"] = metadata["DimOrder BF Array"]
-        
+
         # get all image IDs
         for i in range(self.ox.get_image_count()):
             metadata["ImageIDs"].append(i)
@@ -166,11 +167,11 @@ class OMETIFFReader:
         #     channel_names.append(
         #         self.ox.image(self.imageseries).Pixels.Channel(c).Name
         #     )
-            
+
         #     self.ox.image(self.imageseries).Pixels.Channel(c).
         metadata = self._remove_none_or_empty_dict(metadata)
         return metadata
-    
+
     @classmethod
     def _parse_channels(cls, sizeC, ox, imageseries):
         channels_dict = {}
@@ -200,18 +201,15 @@ class OMETIFFReader:
                     channel_dict[attr] = val
                 channel_dict = cls._remove_none_or_empty_dict(channel_dict)
             channels_dict[channel_name] = channel_dict
-            
+
         return channels_dict
-            
-        
-        
+
     @staticmethod
     def _remove_none_or_empty_dict(dictionary):
-        return {key : item for key, item in dictionary.items() if (item != []) and (item != None)}
-        
-        
+        return {key: item for key, item in dictionary.items() if (item != []) and (item is not None)}
+
     @classmethod
-    def _open_tiff(cls, fpath: pathlib.PosixPath) -> (np.ndarray, str):
+    def _open_tiff(cls, fpath: pathlib.Path) -> (np.ndarray, str):
         with tifffile.TiffFile(str(fpath)) as tif:
             omexml_string = tif.ome_metadata
             array = tif.asarray()
@@ -277,8 +275,7 @@ class OMETIFFReader:
 
         return metadata
 
-
-#%%
+# %%
 # basepath = Path("/home/phil/Scrivania")
 # cell_path = basepath.joinpath("cell.ome.tiff")
 # stack_path = basepath.joinpath("stack.tiff")
