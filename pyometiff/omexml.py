@@ -43,7 +43,6 @@ def xsd_now():
     return datetime.datetime.now().isoformat()
 
 
-DEFAULT_NOW = xsd_now()
 #
 # The namespaces
 #
@@ -52,7 +51,7 @@ NS_ORIGINAL_METADATA = "openmicroscopy.org/OriginalMetadata"
 NS_DEFAULT = "http://www.openmicroscopy.org/Schemas/{ns_key}/2013-06"
 NS_RE = r"http://www.openmicroscopy.org/Schemas/(?P<ns_key>.*)/[0-9/-]"
 
-default_xml = """<?xml version="1.0" encoding="UTF-8"?>
+default_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <!-- Warning: this comment is an OME-XML metadata block, which contains
 crucial dimensional parameters and other important metadata. Please edit
 cautiously (if at all), and back up the original data before doing so.
@@ -62,7 +61,7 @@ https://docs.openmicroscopy.org/latest/ome-model/ome-tiff/ -->
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.openmicroscopy.org/Schemas/OME/2016-06 http://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd">
     <Image ID="Image:0" Name="default.png">
-        <AcquisitionDate>%(DEFAULT_NOW)s</AcquisitionDate>
+        <AcquisitionDate>{xsd_now()}</AcquisitionDate>
         <Pixels BigEndian="false"
                 DimensionOrder="XYCZT"
                 ID="Pixels:0"
@@ -78,7 +77,7 @@ https://docs.openmicroscopy.org/latest/ome-model/ome-tiff/ -->
             </Channel>
         </Pixels>
     </Image>
-</OME>""".format(ns_ome_default=NS_DEFAULT.format(ns_key='ome'), ns_sa_default=NS_DEFAULT.format(ns_key='sa'))
+</OME>"""
 
 #
 # These are the OME-XML pixel types - not all supported by subimager
