@@ -1,5 +1,6 @@
 lxml
-tifffile
+tifffile>2020.10.1
 numpy
 pytest
 mock
+imagecodecs

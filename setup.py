@@ -4,13 +4,14 @@ from pyometiff import __version__
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("requirements", "r") as fh:
+    requirements = fh.read().splitlines()
+
 setup(
     name="pyometiff",
     version=__version__,
     description="Read and Write OME-TIFFs in Python",
     packages=find_packages(exclude=("tests",)),
-    # py_modules = ["omereader", "omewriter", "omexml"],
-    # package_dir = {"": "pyometiff"},
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
@@ -21,10 +22,7 @@ setup(
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=["numpy",
-                      "tifffile>2020.10.1",
-                      "imagecodecs",
-                      "lxml"],
+    install_requires=requirements,
     extras_require={
         "dev": ["pytest>3.7", "mock"],
     },
