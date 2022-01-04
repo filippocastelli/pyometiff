@@ -131,7 +131,7 @@ class TestOMETIFFReader:
     @pytest.fixture
     def read_fixture(self, **kwargs):
         def _read_fixture(**_kwargs):
-            reader = OMETIFFReader(**kwargs)
+            reader = OMETIFFReader(**_kwargs)
             reader.read()
             return reader.array, reader.metadata, reader.omexml_string
 
