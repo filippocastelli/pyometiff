@@ -14,7 +14,7 @@
 # if you didn't receive a copy, visit <http://www.gnu.org/licenses/>.
 
 # Copyright (c) 2021, Filippo Maria Castelli
-
+import logging
 from pathlib import Path
 from typing import Union
 from lxml import etree as ET
@@ -22,7 +22,7 @@ import numpy as np
 import tifffile
 from pyometiff.omexml import OMEXML, get_pixel_type, xsd_now
 
-BYTE_BOUNDARY = 2 ** 21
+BYTE_BOUNDARY = 2 ** 32
 
 
 class InvalidDimensionOrderingError(Exception):
@@ -48,8 +48,23 @@ class OMETIFFWriter:
             explicit_tiffdata: bool = False,
             compression: str = None,
             arr_shape: Union[list, tuple] = None,
-
+            bigtiff: bool = False,
     ):
+        """
+        OMETIFFWriter class for writing OME-TIFF files.
+
+        :param fpath: path to the file to be written
+        :param array: array to be written
+        :param metadata: dictionary containing the metadata to be written
+        :param overwrite: if True, overwrite the file if it already exists
+        :param dimension_order: dimension ordering of the array
+        :param photometric: photometric interpretation of the array, "minisblack" or "miniswhite"
+        :param explicit_tiffdata: if True, explicitly write the tiffdata tag, otherwise it is written automatically [DEBUG ONLY]
+        :param compression: compression type, if None, no compression is used
+        :param arr_shape: shape of the array, if None, it is inferred from the array
+        :param bigtiff: if True, use bigtiff format. File sizes exceeding 4GB will automatically be written in bigtiff format
+        """
+
         self.fpath = Path(fpath)
         self.array = array
         self.metadata = metadata
@@ -59,7 +74,7 @@ class OMETIFFWriter:
         self.explicit_tiffdata = explicit_tiffdata
         self.compression = compression
         self.arr_shape = arr_shape
-
+        self.use_bigtiff = bigtiff
         self.init_file()
 
     def init_file(self):
@@ -85,7 +100,7 @@ class OMETIFFWriter:
                    xml_declaration=True)
 
     @staticmethod
-    def _use_bigtiff(array):
+    def _should_use_bigtiff(array):
         if array is None:
             return False
         else:
@@ -93,9 +108,14 @@ class OMETIFFWriter:
             return file_size > BYTE_BOUNDARY
 
     def write_stack(self, array, xml_meta):
-        self.use_bigtiff = self._use_bigtiff(array)
-        self.use_bigtiff = True
-        with tifffile.TiffWriter(str(self.fpath), bigtiff=self.use_bigtiff) as tif:
+        should_use_bigtiff = self._should_use_bigtiff(array)
+
+        use_bigtiff = self.use_bigtiff or should_use_bigtiff
+
+        if should_use_bigtiff and (self.use_bigtiff is False):
+            logging.warning("array size is larger than 4GB, using BigTIFF")
+
+        with tifffile.TiffWriter(str(self.fpath), bigtiff=use_bigtiff) as tif:
             tif.save(
                 array, description=xml_meta, photometric=self.photometric, metadata=None, compression=self.compression
             )
