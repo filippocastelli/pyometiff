@@ -1,5 +1,4 @@
 import pathlib
-import datetime
 from pyometiff import OMETIFFWriter
 import numpy as np
 output_fpath = pathlib.Path.cwd().joinpath("test_out.ome.tiff")
