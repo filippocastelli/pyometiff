@@ -92,6 +92,11 @@ class OMETIFFWriter:
     def write_xml(self, xml_fpath: Path = None):
         if xml_fpath is None:
             xml_fpath = self.fpath.parent.joinpath(self.fpath.stem + ".xml")
+
+        # overwrite if xml already exist
+        if xml_fpath.exists():
+                xml_fpath.unlink()
+
         tree = ET.ElementTree(ET.fromstring(self._xml))
         tree.write(str(xml_fpath),
                    encoding="utf-8",
