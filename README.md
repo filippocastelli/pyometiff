@@ -100,6 +100,28 @@ The relative licensing and copyright notices are included in the [LICENSE](LICEN
 - [OME-XML format](https://docs.openmicroscopy.org/ome-model/5.6.3/ome-xml/)
 - [OME-XML schema specification](https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome.html)
 
+
+## Cite
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7520378.svg)](https://doi.org/10.5281/zenodo.7520378)
+
+Zenodo DOI: 10.5281/zenodo.7520378
+
+```bibtex
+@software{filippo_castelli_2023_7520378,
+  author       = {Filippo Castelli and
+                  Giacomo Mazzamuto},
+  title        = {filippocastelli/pyometiff: 0.0.11},
+  month        = jan,
+  year         = 2023,
+  publisher    = {Zenodo},
+  version      = {0.0.11},
+  doi          = {10.5281/zenodo.7520378},
+  url          = {https://doi.org/10.5281/zenodo.7520378}
+}
+```
+
+
 ## Contacts
 
 **Author:**
