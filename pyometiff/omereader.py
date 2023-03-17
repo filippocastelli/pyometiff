@@ -51,7 +51,7 @@ class OMETIFFReader:
         if omexml_string is None:
             logging.warning("File {} has no OME-XML tags!".format(str(self.fpath)))
             return None
-        self.ox = OMEXML(self.omexml_string)
+        self.ox = OMEXML(omexml_string)
         metadata = self._get_metadata_template()
         metadata["Directory"] = str(self.fpath.parent)
         metadata["Filename"] = str(self.fpath.name)
