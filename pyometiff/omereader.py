@@ -109,7 +109,8 @@ class OMETIFFReader:
         metadata["DimOrder BF"] = self.ox.image(self.imageseries).Pixels.DimensionOrder
 
         # reverse the order to reflect later the array shape
-        metadata["DimOrder BF Array"] = metadata["DimOrder BF"][::-1]
+        dim_order: list = metadata["DimOrder BF"]
+        metadata["DimOrder BF Array"] = dim_order[::-1] # pylint: disable=unsubscriptable-object
 
         # DimOrder custom field
         metadata["DimOrder"] = metadata["DimOrder BF Array"]
@@ -228,7 +229,7 @@ class OMETIFFReader:
     #     return array
 
     @staticmethod
-    def _get_metadata_template():
+    def _get_metadata_template() -> dict:
         metadata = {
             "Directory": None,
             "Filename": None,
