@@ -2,4 +2,4 @@ from pyometiff.omereader import OMETIFFReader
 from pyometiff.omewriter import OMETIFFWriter
 from pyometiff.omexml import OMEXML
 
-__version__ = "0.0.12"
+from pyometiff.__version import __version__
