@@ -163,7 +163,11 @@ class OMETIFFReader:
             metadata["ObjMag"] = None
 
         # get channel names
-        metadata["Channels"] = self._parse_channels(metadata["SizeC"], self.ox, self.imageseries)
+        try:
+            metadata["Channels"] = self._parse_channels(metadata["SizeC"], self.ox, self.imageseries)
+        except (KeyError, AttributeError, IndexError) as e:
+            metadata["Channels"] = None
+        
         # for c in range(metadata["SizeC"]):
         #     channel_names.append(
         #         self.ox.image(self.imageseries).Pixels.Channel(c).Name
