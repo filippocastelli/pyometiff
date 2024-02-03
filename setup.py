@@ -23,12 +23,10 @@ setup(
     description="Read and Write OME-TIFFs in Python",
     packages=["pyometiff"],
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
         # "Operating System :: Os Independent",
     ],
@@ -41,5 +39,5 @@ setup(
     url="https://github.com/filippocastelli/pyometiff",
     author="Filippo Maria Castelli",
     author_email="castelli@lens.unifi.it",
-    python_requires=">=3.6",
+    python_requires=">=3.8",
 )
