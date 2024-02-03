@@ -86,7 +86,7 @@ writer.write()
 ## Licensing
 `pyometiff` is distributed under the **GNU General Public License v3.0** (GNU GPLv3),
 
-see the [LICENSE](LICENSE) file for further information.
+see the [LICENSE](LICENSE) file for more info.
 
 This implementation is partially based on
 [aicsimageio](https://github.com/AllenCellModeling/aicsimageio) by the Allen Institute for Cell Science and [python-bioformats](https://github.com/CellProfiler/python-bioformats) by the Broad Institute, part of the CellProfiler project.
