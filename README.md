@@ -126,8 +126,9 @@ Zenodo DOI: 10.5281/zenodo.7520378
 
 **Author:**
 
-Filippo Maria Castelli  
-castelli@lens.unifi.it  
+Filippo Maria Castelli, PhD
+
+filippocastelli42@gmail.com
+
+[formerly] 
 LENS, European Laboratory for Non-linear Spectroscopy  
-Via Nello Carrara 1  
-50019 Sesto Fiorentino (FI), Italy
