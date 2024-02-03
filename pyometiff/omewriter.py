@@ -121,7 +121,7 @@ class OMETIFFWriter:
             logging.warning("array size is larger than 4GB, using BigTIFF")
 
         with tifffile.TiffWriter(str(self.fpath), bigtiff=use_bigtiff) as tif:
-            tif.save(
+            tif.write(
                 array, description=xml_meta, photometric=self.photometric, metadata=None, compression=self.compression
             )
 
