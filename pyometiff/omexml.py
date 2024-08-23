@@ -988,6 +988,24 @@ class OMEXML(object):
 
         SizeC = property(get_SizeC, set_SizeC)
 
+        def get_TimeIncrement(self) -> float:
+            """The time increment between T planes"""
+            return get_float_attr(self.node, "TimeIncrement")
+
+        def set_TimeIncrement(self, value: float) -> None:
+            self.node.set("TimeIncrement", str(value))
+
+        TimeIncrement = property(get_TimeIncrement, set_TimeIncrement)
+
+        def get_TimeIncrementUnit(self) -> str:
+            """The unit of the time increment"""
+            return self.node.get("TimeIncrementUnit")
+        
+        def set_TimeIncrementUnit(self, value: str) -> None:
+            self.node.set("TimeIncrementUnit", value)
+
+        TimeIncrementUnit = property(get_TimeIncrementUnit, set_TimeIncrementUnit)
+
         def get_channel_count(self) -> int:
             """The number of channels in the image
 

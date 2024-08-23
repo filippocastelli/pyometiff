@@ -35,7 +35,7 @@ class OMETIFFReader:
         self.fpath = Path(fpath)
         self.imageseries = imageseries
 
-    def read(self) -> (np.ndarray, dict, str):
+    def read(self) -> tuple[np.ndarray, dict, str]:
         self.array, self.omexml_string = self._open_tiff(self.fpath)
         self.metadata = self.parse_metadata(self.omexml_string)
         return self.array, self.metadata, self.omexml_string
@@ -71,6 +71,10 @@ class OMETIFFReader:
         metadata["PhysicalSizeX"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeX
         metadata["PhysicalSizeY"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeY
         metadata["PhysicalSizeZ"] = self.ox.image(self.imageseries).Pixels.PhysicalSizeZ
+
+        # time increment
+        metadata["TimeIncrement"] = self.ox.image(self.imageseries).Pixels.TimeIncrement
+        metadata["TimeIncrementUnit"] = self.ox.image(self.imageseries).Pixels.TimeIncrementUnit
 
         # physical size unit
         metadata["PhysicalSizeXUnit"] = self.ox.image(

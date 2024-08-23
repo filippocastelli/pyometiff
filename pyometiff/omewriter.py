@@ -173,6 +173,15 @@ class OMETIFFWriter:
         pixels.set_SizeZ(_dim_or_1("Z"))
         pixels.set_SizeY(_dim_or_1("Y"))
         pixels.set_SizeX(_dim_or_1("X"))
+        
+        # time increment
+        time_increment = pop_expected_keys.get("TimeIncrement", None)
+        time_increment_unit = pop_expected_keys.get("TimeIncrementUnit", None)
+        
+        if time_increment is not None:
+            pixels.set_TimeIncrement(time_increment)
+        if time_increment_unit is not None:
+            pixels.set_TimeIncrementUnit(time_increment_unit)
 
         # this is reversed of what dimensionality of the ometiff file is saved as
         pixels.set_DimensionOrder(self._dimension_order[::-1])
