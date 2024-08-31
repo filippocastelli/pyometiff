@@ -218,7 +218,7 @@ class OMETIFFReader:
         return {key: item for key, item in dictionary.items() if (item != []) and (item is not None)}
 
     @classmethod
-    def _open_tiff(cls, fpath: pathlib.Path) -> (np.ndarray, str):
+    def _open_tiff(cls, fpath: pathlib.Path) -> tuple[np.ndarray, str]:
         with tifffile.TiffFile(str(fpath)) as tif:
             omexml_string = tif.ome_metadata
             array = tif.asarray()
