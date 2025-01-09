@@ -71,7 +71,7 @@ metadata_dict = {
 }
 
 # our data in npy format
-npy_array_data = np.array(shape=(2, 10, 3, 256, 256))
+npy_array_data = np.zeros(shape=(2, 10, 3, 256, 256))
 # a string describing the dimension ordering
 dimension_order = "ZTCYX"
 
@@ -79,7 +79,7 @@ writer = OMETIFFWriter(
     fpath=output_fpath,
     dimension_order=dimension_order,
     array=npy_array_data,
-    metadata=metadata,
+    metadata=metadata_dict,
     explicit_tiffdata=False)
 
 writer.write()
