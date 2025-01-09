@@ -68,6 +68,7 @@ metadata_dict = {
             "ExcitationWavelengthUnit": "nm"
         },
     }
+}
 
 # our data in npy format
 npy_array_data = np.array(shape=(2, 10, 3, 256, 256))
