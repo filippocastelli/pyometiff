@@ -36,6 +36,7 @@ similarly, to write an OME-TIFF file, we use the `OMETIFFWriter` class and its `
 
 ```python
 import pathlib
+import numpy as np
 from pyometiff import OMETIFFWriter
 output_fpath = pathlib.Path.cwd().joinpath("test_out.ome.tiff")
 
@@ -68,9 +69,10 @@ metadata_dict = {
             "ExcitationWavelengthUnit": "nm"
         },
     }
+}
 
 # our data in npy format
-npy_array_data = np.array(shape=(2, 10, 3, 256, 256))
+npy_array_data = np.random.randint(0, 255, (2, 10, 3, 512, 512), dtype=np.uint8)
 # a string describing the dimension ordering
 dimension_order = "ZTCYX"
 
@@ -78,7 +80,7 @@ writer = OMETIFFWriter(
     fpath=output_fpath,
     dimension_order=dimension_order,
     array=npy_array_data,
-    metadata=metadata,
+    metadata=metadata_dict,
     explicit_tiffdata=False)
 
 writer.write()
