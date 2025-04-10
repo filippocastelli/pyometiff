@@ -162,7 +162,7 @@ class OMETIFFReader:
                 self.imageseries
             ).Objective.get_NominalMagnification()
         except (KeyError, AttributeError, IndexError) as e:
-            print("Key not found:", e)
+            logging.warning(f"Objective metadata incomplete: {e}")
             metadata["ObjNA"] = None
             metadata["ObjID"] = None
             metadata["ObjMag"] = None
