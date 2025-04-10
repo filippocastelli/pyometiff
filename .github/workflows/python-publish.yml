@@ -34,6 +34,11 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-root
 
+      - name: Configure Git identity
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
       - name: Bump version
         id: bump
         run: |
@@ -41,6 +46,7 @@ jobs:
           version=$(poetry run bump-my-version bump ${{ github.event.inputs.part }} --dry-run --allow-dirty --verbose | grep "New version will be" | awk '{ print $5 }' | tr -d "'")
           echo "version=$version" >> $GITHUB_OUTPUT
           poetry run bump-my-version bump ${{ github.event.inputs.part }} --allow-dirty
+
 
       - name: Run tests
         run: poetry run pytest
