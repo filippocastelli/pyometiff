@@ -60,8 +60,6 @@ jobs:
 
       - name: Publish to PyPI via OIDC
         run: poetry publish
-        env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_OIDC_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
