@@ -127,8 +127,9 @@ class OMETIFFReader:
         try:
             metadata["InstrumentID"] = self.ox.instrument(self.imageseries).get_ID()
         except (KeyError, AttributeError, IndexError) as e:
-            print("Key not found:", e)
+            logging.warning(f"InstrumentID missing in metadata for {self.fpath.name}: {e}")
             metadata["InstrumentID"] = None
+        
         try:
             metadata["DetectorModel"] = self.ox.instrument(
                 self.imageseries
@@ -140,7 +141,7 @@ class OMETIFFReader:
                 self.imageseries
             ).Detector.get_Type()
         except (KeyError, AttributeError, IndexError) as e:
-            print("Key not found:", e)
+            logging.warning(f"Detector metadata missing or incomplete for {self.fpath.name}: {e}")
             metadata["DetectorModel"] = None
             metadata["DetectorID"] = None
             metadata["DetectorType"] = None
@@ -150,7 +151,7 @@ class OMETIFFReader:
                 self.imageseries
             ).Microscope.get_Type()
         except (KeyError, AttributeError, IndexError) as e:
-            print("key not found", e)
+            logging.warning(f"MicroscopeType metadata missing for {self.fpath.name}: {e}")
 
         try:
             metadata["ObjNA"] = self.ox.instrument(
@@ -161,7 +162,7 @@ class OMETIFFReader:
                 self.imageseries
             ).Objective.get_NominalMagnification()
         except (KeyError, AttributeError, IndexError) as e:
-            print("Key not found:", e)
+            logging.warning(f"Objective metadata incomplete for {self.fpath.name}: {e}")
             metadata["ObjNA"] = None
             metadata["ObjID"] = None
             metadata["ObjMag"] = None
