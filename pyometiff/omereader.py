@@ -127,8 +127,9 @@ class OMETIFFReader:
         try:
             metadata["InstrumentID"] = self.ox.instrument(self.imageseries).get_ID()
         except (KeyError, AttributeError, IndexError) as e:
-            print("Key not found:", e)
+            logging.warning(f"InstrumentID missing in metadata: {e}")
             metadata["InstrumentID"] = None
+        
         try:
             metadata["DetectorModel"] = self.ox.instrument(
                 self.imageseries
