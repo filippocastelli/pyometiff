@@ -141,7 +141,7 @@ class OMETIFFReader:
                 self.imageseries
             ).Detector.get_Type()
         except (KeyError, AttributeError, IndexError) as e:
-            print("Key not found:", e)
+            logging.warning(f"Detector metadata missing or incomplete: {e}")
             metadata["DetectorModel"] = None
             metadata["DetectorID"] = None
             metadata["DetectorType"] = None
