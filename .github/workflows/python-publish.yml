@@ -9,9 +9,8 @@ on:
         default: 'patch'
 
 permissions:
-  id-token: write         # For PyPI trusted publishing (OIDC)
-  contents: write         # For pushing tags and creating GitHub releases
-  packages: write
+  id-token: write         # For PyPI OIDC
+  contents: write         # To push tags and create releases
 
 jobs:
   release:
@@ -55,11 +54,13 @@ jobs:
           git push origin HEAD
           git push origin v${{ steps.bump.outputs.version }}
 
-      - name: Build package
+      - name: Build package with Poetry
         run: poetry build
 
-      - name: Publish to PyPI via OIDC
-        run: poetry publish
+      - name: Publish to PyPI using Trusted Publisher (OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
