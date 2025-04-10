@@ -34,10 +34,12 @@ current_version = "1.0.1"
 commit = true
 tag = true
 
-[tool.bumpversion.file."pyproject.toml"]
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
-[tool.bumpversion.file."pyometiff/__version.py"]
+[[tool.bumpversion.files]]
+filename = "pyometiff/__init__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
