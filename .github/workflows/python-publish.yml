@@ -37,8 +37,10 @@ jobs:
       - name: Bump version
         id: bump
         run: |
-          version=$(poetry run bump-my-version bump ${{ github.event.inputs.part }} --allow-dirty --list | grep new_version= | cut -d= -f2)
+          set -e
+          version=$(poetry run bump-my-version bump ${{ github.event.inputs.part }} --dry-run --allow-dirty --verbose | grep "New version will be" | awk '{ print $5 }' | tr -d "'")
           echo "version=$version" >> $GITHUB_OUTPUT
+          poetry run bump-my-version bump ${{ github.event.inputs.part }} --allow-dirty
 
       - name: Run tests
         run: poetry run pytest
