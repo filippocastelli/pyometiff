@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "pyometiff"
+version = "1.0.1"
+description = "Read and Write OME-TIFFs in Python"
+authors = ["Filippo Maria Castelli <castelli@lens.unifi.it>"]
+license = "GPL-2.0-or-later"
+readme = "README.md"
+homepage = "https://github.com/filippocastelli/pyometiff"
+packages = [{ include = "pyometiff" }]
+classifiers = [
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+lxml = "^5.3.2"
+tifffile = ">2020.10.1"
+numpy = ">=1.26.4"
+imagecodecs = ">=2024.12.30"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=3.7"
+mock = "^5.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
