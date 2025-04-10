@@ -61,6 +61,8 @@ class MockedOMEXML:
             PhysicalSizeYUnit = "µm"
             PhysicalSizeZUnit = "µm"
             DimensionOrder = "XYCZT"
+            TimeIncrement = 1.0
+            TimeIncrementUnit = "s"
 
             class Channel:
                 def __init__(self, int_arg):
