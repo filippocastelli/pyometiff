@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyometiff"
-version = "1.1.1"
+version = "1.1.2"
 description = "Read and Write OME-TIFFs in Python"
 authors = ["Filippo Maria Castelli <castelli@lens.unifi.it>"]
 license = "GPL-2.0-or-later"
@@ -30,7 +30,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.bumpversion]
-current_version = "1.1.1"
+current_version = "1.1.2"
 commit = true
 tag = true
 
