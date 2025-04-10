@@ -151,7 +151,7 @@ class OMETIFFReader:
                 self.imageseries
             ).Microscope.get_Type()
         except (KeyError, AttributeError, IndexError) as e:
-            print("key not found", e)
+            logging.warning(f"MicroscopeType metadata missing: {e}")
 
         try:
             metadata["ObjNA"] = self.ox.instrument(
